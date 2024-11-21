@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "./components/Header";
 import Input from "./components/Input";
 import Todo from "./components/Todo";
@@ -9,9 +9,9 @@ export default function App() {
   const [listTodo, setListTodo] = useState([]);
   const [keyTodo, setKeyTodo] = useState(0);
   const [editTodo, setEditTodo] = useState({});
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [step, setStep] = useState('');
+  const inputTitle = useRef('');
+  const inputDescription = useRef('');
+  const inputStep = useRef('');
   const [titleFeedback, setTitleFeedback] = useState('');
   const [descriptionFeedback, setDescriptionFeedback] = useState('');
   const [buttonText, setButtonText] = useState({
@@ -31,15 +31,9 @@ export default function App() {
     }
   }, []);
 
-  function getTitleValue(event){
-    setTitle(event.target.value);
-  }
-
-  function getDescriptionValue(event){
-    setDescription(event.target.value);
-  }
-
   function getTodoValues(){
+    let title = inputTitle?.current?.value.trim();
+    let description = inputDescription?.current?.value.trim();
     if(title == ''){
       setTitleFeedback('Titúlo é obrigatório');
     }
@@ -57,8 +51,8 @@ export default function App() {
         return [...listTodo, todo];
       });
       setKeyTodo(keyTodo + 1);
-      setTitle('');
-      setDescription('');
+      inputTitle.current.value = '';
+      inputDescription.current.value = '';
       setTitleFeedback('');
       setDescriptionFeedback('');
     }
@@ -66,15 +60,16 @@ export default function App() {
 
   function getTodoEdit(key){
     let todo = JSON.parse(localStorage.getItem(key));
-    console.log(todo);
-    setTitle(todo.title);
-    setDescription(todo.description);
+    inputTitle.current.value = todo.title;
+    inputDescription.current.value = todo.description;
     setButtonText({icon: <RefreshCcw />, text: "Editar Tarefa"})
     setEditTodo(todo);
     document.querySelector('#header').scrollIntoView({ behavior: "instant", block: "start" });
   }
 
   function editTodoList(){
+    let title = inputTitle?.current?.value.trim();
+    let description = inputDescription?.current?.value.trim();
     if(title == ''){
       setTitleFeedback('Titúlo é obrigatório');
     }
@@ -90,8 +85,8 @@ export default function App() {
         }
         return todo;
       }))
-      setTitle('');
-      setDescription('');
+      inputTitle.current.value = '';
+      inputDescription.current.value = '';
       setTitleFeedback('');
       setDescriptionFeedback('');
       setButtonText({icon: <ClipboardPlus/>, text: "Adicionar Tarefa"});
@@ -103,11 +98,8 @@ export default function App() {
     setListTodo(listTodo.filter(todo => todo.key != key));
   }
 
-  function getStepValue(event){
-    setStep(event.target.value);
-  }
-
   function addStepTodo(key) {
+    let step = inputStep?.current?.value.trim();
     if (step !== '') {
       setListTodo(listTodo.map(todo => {
         if (todo.key === key) {
@@ -118,7 +110,7 @@ export default function App() {
         }
         return todo;
       }));
-      setStep('');
+      inputStep.current.value = '';
     }
   }
 
@@ -148,7 +140,7 @@ export default function App() {
           label="Título"
           input=
           {
-            <input onChange={getTitleValue} value={title} type="text" name="title" id="name" 
+            <input ref={inputTitle} type="text" name="title" id="name" 
             className={`text-blue-900 text-xl font-semibold bg-slate-300 h-10 ${titleFeedback ? "border-red" : ""}`} 
             />
           }
@@ -158,7 +150,7 @@ export default function App() {
           label="Descrição"
           input=
           {
-            <textarea onChange={getDescriptionValue} value={description} name="description" id="" 
+            <textarea ref={inputDescription} name="description" id="" 
               className="text-blue-900 text-xl font-semibold bg-slate-300 h-40">
             </textarea>
           }
@@ -183,7 +175,7 @@ export default function App() {
                 deleteStepTodo={deleteStepTodo}
                 stepInput={
                   <InputStep
-                    getStepValue={getStepValue}
+                    inputRef={inputStep}
                     clickFunction={addStepTodo}
                     todoKey={todo.key}
                   />
