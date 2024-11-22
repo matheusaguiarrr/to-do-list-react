@@ -1,16 +1,20 @@
 import { Pencil, Trash2, X } from "lucide-react";
+import { useContext } from "react";
+import { TodoContext } from "../context/TodoContext";
 
-export default function Todo({todoKey, title, description, steps, editFunction, deleteFunction, stepInput, deleteStepTodo}){
+export default function Todo({todoKey, title, description, steps, stepInput}){
+    const { getTodoEdit, deleteTodo, deleteStepTodo } = useContext(TodoContext);
+
     return (
         <div className="bg-slate-300 text-blue-900 w-1/4 my-6 p-4">
             <h1 className="text-3xl font-semibold my-4">{title}</h1>
             <p className="text-lg">{description}</p>
             <div className="my-4">
                 {stepInput}
-                <button onClick={() => editFunction(todoKey)} title="Editar Tarefa" className="mr-4">
+                <button onClick={() => getTodoEdit(todoKey)} title="Editar Tarefa" className="mr-4">
                     <Pencil />
                 </button>
-                <button onClick={() => deleteFunction(todoKey)} title="Deletar Tarefa" className="mr-4">
+                <button onClick={() => deleteTodo(todoKey)} title="Deletar Tarefa" className="mr-4">
                     <Trash2 />
                 </button>
             </div>
