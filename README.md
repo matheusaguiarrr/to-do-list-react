@@ -1,6 +1,6 @@
 # Gerenciador de Tarefas com Etapas  
 
-![Screenshot](https://via.placeholder.com/1000x400?text=Adicione+uma+imagem+do+app+aqui)  
+![image](https://github.com/user-attachments/assets/8ef582e1-7011-47ad-b9d2-d016a155e4ae)
 
 ## Sobre o Projeto  
 
